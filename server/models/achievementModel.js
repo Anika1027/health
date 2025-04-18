@@ -18,15 +18,24 @@ const achievementSchema = new mongoose.Schema({
     type: Number,
     default: 100,
     min: 0,
-    max: 100
+    max: 100,
+    validate: {
+      validator: function(value) {
+        return value >= 0 && value <= 100;  // Ensures progress is a percentage
+      },
+      message: 'Progress must be between 0 and 100'
+    }
   },
   metadata: {
-    type: String
+    type: mongoose.Schema.Types.Mixed  // Allows flexible data types for metadata
   }
 });
 
-// Index for faster queries by userId
+// Index for faster queries by userId and badgeId
 achievementSchema.index({ userId: 1, badgeId: 1 });
+
+// Optional: Add additional indexes if you often query by earnedAt
+// achievementSchema.index({ earnedAt: 1 });
 
 const Achievement = mongoose.model('Achievement', achievementSchema);
 
